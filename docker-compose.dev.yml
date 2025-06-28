@@ -1,0 +1,86 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: one-event-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: one_event_development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - one-event-dev-network
+
+  # Redis (for development)
+  redis:
+    image: redis:7-alpine
+    container_name: one-event-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - one-event-dev-network
+
+  # Backend API (Development)
+  backend:
+    build:
+      context: ./one-event-be
+      dockerfile: Dockerfile
+      target: builder
+    container_name: one-event-backend-dev
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: ""
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: one_event_development
+      JWT_SECRET: development-jwt-secret-key
+      CORS_ORIGIN: http://localhost:3001
+    ports:
+      - "3000:3000"
+    networks:
+      - one-event-dev-network
+    volumes:
+      - ./one-event-be:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+  # Frontend (Development)
+  frontend:
+    build:
+      context: ./one-event-fe
+      dockerfile: Dockerfile
+      target: deps
+    container_name: one-event-frontend-dev
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NODE_ENV: development
+    ports:
+      - "3001:3000"
+    networks:
+      - one-event-dev-network
+    volumes:
+      - ./one-event-fe:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+volumes:
+  postgres_dev_data:
+
+networks:
+  one-event-dev-network:
+    driver: bridge
