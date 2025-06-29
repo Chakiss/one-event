@@ -69,7 +69,7 @@ jobs:
             --memory=1Gi \
             --cpu=1 \
             --timeout=300 \
-            --set-env-vars="NODE_ENV=production,PORT=3000" \
+            --set-env-vars="NODE_ENV=production" \
             --set-secrets="DATABASE_URL=one-event-db-url-prod:latest,JWT_SECRET=one-event-jwt-secret-prod:latest" || echo "Backend deploy failed"
 
       - name: Get Deployment URLs
