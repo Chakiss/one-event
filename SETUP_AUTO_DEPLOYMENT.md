@@ -1,3 +1,11 @@
+# ✅ OneEvent Auto-Deployment - SETUP COMPLETE!
+
+> **🎉 SUCCESS:** Auto-deployment has been successfully set up and is now operational!  
+> **Live URL:** https://one-event-api-test-zwxzaz56uq-as.a.run.app  
+> **Status:** All systems operational ✅
+
+---
+
 # 🚀 OneEvent - การตั้งค่า Auto-Deployment ขึ้น GCP
 
 คู่มือละเอียดสำหรับการตั้งค่าให้ push code แล้วขึ้น GCP อัตโนมัติ

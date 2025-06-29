@@ -103,7 +103,9 @@ export interface CreateEventRequest {
   type: 'conference' | 'workshop' | 'seminar' | 'networking' | 'other';
 }
 
-export type UpdateEventRequest = Partial<CreateEventRequest>;
+export type UpdateEventRequest = Partial<CreateEventRequest> & {
+  status?: 'draft' | 'published' | 'cancelled';
+};
 
 export interface EventFilterRequest {
   title?: string;

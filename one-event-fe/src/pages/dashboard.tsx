@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiClient } from '@/lib/api-client';
-import type { User, Event } from '@/types/api';
+import type { Event } from '@/types/api';
 
 const DashboardPage = () => {
   const { user, logout, loading } = useAuth();
@@ -103,7 +103,7 @@ const DashboardPage = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome back!</h2>
-          <p className="text-gray-600">Here's what's happening with your events today.</p>
+          <p className="text-gray-600">Here&apos;s what&apos;s happening with your events today.</p>
         </div>
 
         {/* Stats Cards */}

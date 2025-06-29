@@ -25,8 +25,9 @@ export default function VerifyEmailPage() {
       await apiClient.verifyEmail({ token: verificationToken });
       setStatus('success');
       setMessage('อีเมลของคุณได้รับการยืนยันเรียบร้อยแล้ว คุณสามารถเข้าสู่ระบบได้แล้ว');
-    } catch (error: any) {
-      if (error.response?.status === 400) {
+    } catch (error: unknown) {
+      const err = error as { response?: { status?: number } };
+      if (err.response?.status === 400) {
         setStatus('expired');
         setMessage('ลิงก์ยืนยันอีเมลหมดอายุหรือไม่ถูกต้อง');
       } else {
@@ -45,7 +46,7 @@ export default function VerifyEmailPage() {
         await apiClient.resendEmailVerification({ email });
         setMessage('ส่งอีเมลยืนยันใหม่เรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ');
       }
-    } catch (error) {
+    } catch {
       setMessage('เกิดข้อผิดพลาดในการส่งอีเมล กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsResending(false);
