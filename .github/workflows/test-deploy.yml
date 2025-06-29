@@ -44,11 +44,14 @@ jobs:
           gcloud run deploy one-event-api-test \
             --image=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/backend:latest \
             --region=${{ env.REGION }} \
+            --add-cloudsql-instances=one-event-production:asia-southeast1:one-event-db \
+            --set-env-vars="NODE_ENV=production" \
+            --set-secrets="DATABASE_URL=one-event-db-url-prod:latest,JWT_SECRET=one-event-jwt-secret-prod:latest" \
             --platform=managed \
             --allow-unauthenticated \
             --max-instances=10 \
             --min-instances=1 \
-            --memory=512Mi \
+            --memory=1Gi \
             --cpu=1 \
             --port=8080 \
             --timeout=300s
@@ -62,8 +65,13 @@ jobs:
           BACKEND_URL=$(gcloud run services describe one-event-api-test --region=${{ env.REGION }} --format='value(status.url)')
           echo "Backend URL: $BACKEND_URL"
           
-          # Simple health check
-          curl -f "$BACKEND_URL/" || echo "Backend health check failed"
+          # Test root endpoint
+          echo "Testing root endpoint..."
+          curl -f "$BACKEND_URL/" || echo "Root endpoint failed"
+          
+          # Test health endpoint
+          echo "Testing health endpoint..."
+          curl -f "$BACKEND_URL/health" || echo "Health endpoint failed"
 
       - name: Deployment Summary
         run: |
