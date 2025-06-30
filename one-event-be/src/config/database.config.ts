@@ -12,10 +12,10 @@ export const getDatabaseConfig = (
       type: 'postgres',
       url: databaseUrl,
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: true, // Enable synchronize for production to create tables
+      synchronize: false, // Disable synchronize now that tables are created
       logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-      migrationsRun: false, // Disable migrations temporarily
+      migrationsRun: true, // Re-enable migrations for future schema changes
     };
   }
   

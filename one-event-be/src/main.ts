@@ -29,6 +29,8 @@ async function bootstrap() {
       'http://127.0.0.1:3001',
       'http://127.0.0.1:3002',
       'http://127.0.0.1:3005',
+      'https://one-event-web-prod-zwxzaz56uq-as.a.run.app',
+      'https://one-event-frontend-test-zwxzaz56uq-as.a.run.app',
       process.env.CORS_ORIGIN || 'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
