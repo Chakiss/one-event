@@ -12,10 +12,10 @@ export const getDatabaseConfig = (
       type: 'postgres',
       url: databaseUrl,
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: true, // Enable synchronize for production to create tables
       logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-      migrationsRun: true, // Enable auto-migration for production
+      migrationsRun: false, // Disable migrations temporarily
     };
   }
   
