@@ -94,7 +94,7 @@ const CreateEventPage = () => {
       const eventData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
-        type: formData.category as 'conference' | 'workshop' | 'seminar' | 'networking' | 'other',
+        type: formData.category as 'conference' | 'workshop' | 'seminar' | 'meetup' | 'webinar' | 'networking' | 'other',
         startDate: new Date(`${formData.startDate}T${formData.startTime}`).toISOString(),
         endDate: formData.endDate && formData.endTime 
           ? new Date(`${formData.endDate}T${formData.endTime}`).toISOString() 
@@ -342,9 +342,9 @@ const CreateEventPage = () => {
                     <option value="conference">Conference</option>
                     <option value="workshop">Workshop</option>
                     <option value="seminar">Seminar</option>
-                    <option value="training">Training</option>
+                    <option value="meetup">Meetup</option>
+                    <option value="webinar">Webinar</option>
                     <option value="networking">Networking</option>
-                    <option value="meeting">Meeting</option>
                     <option value="other">Other</option>
                   </select>
                 </div>

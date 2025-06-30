@@ -100,7 +100,13 @@ export interface CreateEventRequest {
   endDate: string;
   location: string;
   maxAttendees: number;
-  type: 'conference' | 'workshop' | 'seminar' | 'networking' | 'other';
+  type: 'conference' | 'workshop' | 'seminar' | 'meetup' | 'webinar' | 'networking' | 'other';
+  registrationDeadline?: string;
+  tags?: string[];
+  price?: number;
+  requirements?: string;
+  agenda?: string;
+  address?: string;
 }
 
 export type UpdateEventRequest = Partial<CreateEventRequest> & {
