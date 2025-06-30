@@ -17,6 +17,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Set build-time environment variables for Next.js
+ENV NEXT_PUBLIC_API_URL=https://one-event-api-prod-zwxzaz56uq-as.a.run.app
+ENV NEXT_PUBLIC_APP_NAME=OneEvent
+ENV NODE_ENV=production
+
 # Build the application
 RUN npm run build
 

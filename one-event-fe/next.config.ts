@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   
   // Environment variables configuration
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://one-event-api-prod-zwxzaz56uq-as.a.run.app',
   },
 
   // Image optimization settings

@@ -66,7 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     // Fetch existing landing page config
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/events/${id}/landing-page`,
+      `${process.env.NEXT_PUBLIC_API_URL || 'https://one-event-api-prod-zwxzaz56uq-as.a.run.app'}/events/${id}/landing-page`,
       {
         headers: {
           'Authorization': `Bearer ${context.req.cookies.token || ''}`,
