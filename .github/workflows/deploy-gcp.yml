@@ -216,6 +216,7 @@ jobs:
               --memory=1Gi \
               --cpu=1 \
               --timeout=300 \
+              --add-cloudsql-instances=one-event-production:asia-southeast1:one-event-db \
               --set-env-vars="NODE_ENV=${{ steps.env.outputs.suffix == 'prod' && 'production' || 'development' }}" \
               --set-secrets="DATABASE_URL=one-event-db-url-${{ steps.env.outputs.suffix }}:latest,JWT_SECRET=one-event-jwt-secret-${{ steps.env.outputs.suffix }}:latest"
           else
