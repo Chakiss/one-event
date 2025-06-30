@@ -15,7 +15,7 @@ export const getDatabaseConfig = (
       synchronize: process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-      migrationsRun: false,
+      migrationsRun: true, // Enable auto-migration for production
     };
   }
   
@@ -31,6 +31,6 @@ export const getDatabaseConfig = (
     synchronize: process.env.NODE_ENV !== 'production',
     logging: process.env.NODE_ENV === 'development',
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-    migrationsRun: false,
+    migrationsRun: true, // Enable auto-migration for production
   };
 };
