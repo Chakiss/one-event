@@ -71,7 +71,10 @@ export class EmailService {
       }
 
       const info = await this.transporter.sendMail(mailOptions);
-      this.logger.log(`Verification email sent to ${email}: ${info.messageId}`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      this.logger.log(
+        `Verification email sent to ${email}: ${info.messageId || 'unknown'}`,
+      );
     } catch (error) {
       this.logger.error(`Failed to send verification email to ${email}:`, error);
       throw new Error('Failed to send verification email');
@@ -226,7 +229,9 @@ export class EmailService {
       }
 
       const info = await this.transporter.sendMail(mailOptions);
-      this.logger.log(`Password reset email sent to ${email}: ${info.messageId}`);
+      this.logger.log(
+        `Password reset email sent to ${email}: ${(info as any).messageId || 'unknown'}`,
+      );
     } catch (error) {
       this.logger.error(`Failed to send password reset email to ${email}:`, error);
       throw new Error('Failed to send password reset email');
