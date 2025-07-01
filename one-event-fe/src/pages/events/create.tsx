@@ -101,10 +101,11 @@ const CreateEventPage = () => {
           : new Date(`${formData.startDate}T${formData.startTime}`).toISOString(),
         location: formData.location.trim(),
         maxAttendees: parseInt(formData.maxParticipants),
+        price: 0, // Add required price field
         registrationDeadline: formData.registrationDeadline 
           ? new Date(formData.registrationDeadline).toISOString() 
           : undefined,
-        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : undefined,
       };
 
       const response = await apiClient.createEvent(eventData);
