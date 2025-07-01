@@ -49,11 +49,31 @@ const CreateEventPage = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.title.trim()) newErrors.title = 'Event title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    // Title validation - must be at least 3 characters and max 200
+    if (!formData.title.trim()) {
+      newErrors.title = 'Event title is required';
+    } else if (formData.title.trim().length < 3) {
+      newErrors.title = 'Title must be at least 3 characters long';
+    } else if (formData.title.trim().length > 200) {
+      newErrors.title = 'Title must be no more than 200 characters long';
+    }
+
+    // Description validation - must be at least 10 characters
+    if (!formData.description.trim()) {
+      newErrors.description = 'Description is required';
+    } else if (formData.description.trim().length < 10) {
+      newErrors.description = 'Description must be at least 10 characters long';
+    }
+
+    // Location validation - max 200 characters
+    if (!formData.location.trim()) {
+      newErrors.location = 'Location is required';
+    } else if (formData.location.trim().length > 200) {
+      newErrors.location = 'Location must be no more than 200 characters long';
+    }
+
     if (!formData.startDate) newErrors.startDate = 'Start date is required';
     if (!formData.startTime) newErrors.startTime = 'Start time is required';
-    if (!formData.location.trim()) newErrors.location = 'Location is required';
     if (!formData.maxParticipants || parseInt(formData.maxParticipants) < 1) {
       newErrors.maxParticipants = 'Max participants must be at least 1';
     }
@@ -175,7 +195,10 @@ const CreateEventPage = () => {
               {/* Event Title */}
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                  Event Title *
+                  Event Title * 
+                  <span className="text-xs text-gray-500 font-normal ml-2">
+                    ({formData.title.length}/200 characters)
+                  </span>
                 </label>
                 <input
                   type="text"
@@ -183,19 +206,28 @@ const CreateEventPage = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
+                  maxLength={200}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                     errors.title ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
-                  placeholder="Enter event title"
+                  placeholder="Enter event title (minimum 3 characters)"
                   disabled={isSubmitting}
                 />
                 {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
+                {!errors.title && formData.title.length > 0 && formData.title.length < 3 && (
+                  <p className="mt-1 text-sm text-amber-600">
+                    Title must be at least 3 characters long
+                  </p>
+                )}
               </div>
 
               {/* Description */}
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
                   Description *
+                  <span className="text-xs text-gray-500 font-normal ml-2">
+                    ({formData.description.length} characters, minimum 10)
+                  </span>
                 </label>
                 <textarea
                   id="description"
@@ -206,10 +238,15 @@ const CreateEventPage = () => {
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                     errors.description ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
-                  placeholder="Describe your event..."
+                  placeholder="Describe your event (minimum 10 characters)..."
                   disabled={isSubmitting}
                 />
                 {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+                {!errors.description && formData.description.length > 0 && formData.description.length < 10 && (
+                  <p className="mt-1 text-sm text-amber-600">
+                    Description must be at least 10 characters long
+                  </p>
+                )}
               </div>
 
               {/* Date and Time */}
@@ -289,6 +326,9 @@ const CreateEventPage = () => {
                 <div>
                   <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
                     Location *
+                    <span className="text-xs text-gray-500 font-normal ml-2">
+                      ({formData.location.length}/200 characters)
+                    </span>
                   </label>
                   <input
                     type="text"
@@ -296,10 +336,11 @@ const CreateEventPage = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
+                    maxLength={200}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                       errors.location ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
-                    placeholder="Event location"
+                    placeholder="Event location (e.g., Bangkok, Thailand)"
                     disabled={isSubmitting}
                   />
                   {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
