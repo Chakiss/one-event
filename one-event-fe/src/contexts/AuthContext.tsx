@@ -31,17 +31,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Initialize auth state
   useEffect(() => {
     const initAuth = async () => {
+      console.log('=== AuthContext: Initializing authentication ===');
+      console.log('apiClient.isAuthenticated():', apiClient.isAuthenticated());
+      
       if (apiClient.isAuthenticated()) {
         try {
+          console.log('Token found, attempting to get user profile...');
           const userData = await apiClient.getProfile();
+          console.log('User profile loaded:', userData);
           setUser(userData);
         } catch (error) {
           console.error('Failed to get user profile:', error);
+          console.log('Token might be invalid, removing it...');
           // Token might be invalid, remove it
           await apiClient.logout();
         }
+      } else {
+        console.log('No token found, user not authenticated');
       }
       setLoading(false);
+      console.log('=== AuthContext: Initialization complete ===');
     };
 
     initAuth();
@@ -50,8 +59,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (data: LoginRequest) => {
     try {
       setLoading(true);
+      console.log('=== AuthContext: Login attempt ===');
+      console.log('Login data:', { email: data.email, password: '[HIDDEN]' });
+      
       const response = await apiClient.login(data);
+      console.log('Login response:', response);
+      
       setUser(response.user);
+      console.log('User set in AuthContext:', response.user);
+      console.log('=== AuthContext: Login successful ===');
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
@@ -75,10 +91,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
+      console.log('=== AuthContext: Logout ===');
       await apiClient.logout();
       setUser(null);
+      console.log('User logged out successfully');
     } catch (error) {
       console.error('Logout failed:', error);
+      // Still clear user state even if logout fails
+      setUser(null);
     }
   };
 

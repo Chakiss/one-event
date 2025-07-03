@@ -5,20 +5,20 @@ export const getDatabaseConfig = (
   configService: ConfigService,
 ): TypeOrmModuleOptions => {
   const databaseUrl = configService.get<string>('DATABASE_URL');
-  
+
   // If DATABASE_URL is provided, use it
   if (databaseUrl) {
     return {
       type: 'postgres',
       url: databaseUrl,
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: false, // Keep synchronize disabled in production
+      synchronize: process.env.NODE_ENV === 'development', // Enable synchronize in development
       logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
       migrationsRun: false, // Disable migrations since tables are already created via synchronize
     };
   }
-  
+
   // Otherwise, use individual connection parameters
   return {
     type: 'postgres',

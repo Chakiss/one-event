@@ -15,7 +15,7 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { RegistrationFilterDto } from './dto/registration-filter.dto';
 import { EventService } from '../event/event.service';
-import { EmailService } from '../../common/services/email.service';
+import { EmailService } from '../../email/email.service';
 import { User } from '../../users/entities/user.entity';
 
 @Injectable()
@@ -29,9 +29,21 @@ export class RegistrationService {
 
   async register(
     createRegistrationDto: CreateRegistrationDto,
-    user: User,
+    user?: User,
   ): Promise<Registration> {
-    const { eventId, notes, additionalInfo } = createRegistrationDto;
+    const {
+      eventId,
+      notes,
+      additionalInfo,
+      guestName,
+      guestEmail,
+      guestPhone,
+      customFields,
+      registrationSource,
+      utmSource,
+      utmMedium,
+      utmCampaign,
+    } = createRegistrationDto;
 
     // Check if event exists and is available for registration
     const event = await this.eventService.findOne(eventId);
@@ -44,13 +56,31 @@ export class RegistrationService {
       throw new BadRequestException('Registration is not open for this event');
     }
 
-    // Check if user is already registered
-    const existingRegistration = await this.registrationRepository.findOne({
-      where: { userId: user.id, eventId },
-    });
+    // For guest registration, require guest email
+    if (!user && !guestEmail) {
+      throw new BadRequestException(
+        'Guest email is required for guest registration',
+      );
+    }
+
+    // Check if user/guest is already registered
+    let existingRegistration;
+    if (user) {
+      existingRegistration = await this.registrationRepository.findOne({
+        where: { userId: user.id, eventId },
+      });
+    } else if (guestEmail) {
+      existingRegistration = await this.registrationRepository.findOne({
+        where: { guestEmail, eventId },
+      });
+    }
 
     if (existingRegistration) {
-      throw new ConflictException('User is already registered for this event');
+      throw new ConflictException(
+        user
+          ? 'User is already registered for this event'
+          : 'This email is already registered for this event',
+      );
     }
 
     // Check if event has available slots
@@ -67,26 +97,55 @@ export class RegistrationService {
 
     // Create registration
     const registration = this.registrationRepository.create({
-      userId: user.id,
+      userId: user?.id,
       eventId,
       notes,
       additionalInfo,
-      status: RegistrationStatus.PENDING,
+      guestName,
+      guestEmail,
+      guestPhone,
+      customFields,
+      registrationSource,
+      utmSource,
+      utmMedium,
+      utmCampaign,
+      status: RegistrationStatus.CONFIRMED, // Auto-confirm for now
       registeredAt: new Date(),
+      confirmedAt: new Date(),
     });
 
     const savedRegistration =
       await this.registrationRepository.save(registration);
 
     // Send confirmation email
-    // TODO: Re-implement email notifications
-    // void this.emailService.sendRegistrationConfirmation(
-    //   user.email,
-    //   user.email, // We don't have firstName/lastName, use email as name
-    //   event.title,
-    //   event.startDate.toISOString(),
-    //   event.location,
-    // );
+    try {
+      const recipientEmail = user?.email || guestEmail!;
+      const recipientName = user?.name || guestName || guestEmail!;
+
+      await this.emailService.sendRegistrationConfirmation(recipientEmail, {
+        guestName: recipientName,
+        guestEmail: recipientEmail,
+        registrationId: savedRegistration.id,
+        eventTitle: event.title,
+        eventDescription: event.description,
+        eventDate: event.startDate.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        eventTime: event.startDate.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        eventLocation: event.location,
+        eventUrl: `${process.env.FRONTEND_URL}/events/${event.id}`,
+        customFields: customFields || additionalInfo,
+      });
+    } catch (error) {
+      console.error('Failed to send registration confirmation:', error);
+      // Don't fail the registration if email fails
+    }
 
     return savedRegistration;
   }
@@ -156,6 +215,29 @@ export class RegistrationService {
   }
 
   async findEventRegistrations(eventId: string): Promise<Registration[]> {
+    return this.registrationRepository.find({
+      where: { eventId },
+      relations: ['user'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findMyEventRegistrations(
+    eventId: string,
+    user: User,
+  ): Promise<Registration[]> {
+    // First, check if the user is the organizer of this event
+    const event = await this.eventService.findOne(eventId);
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    if (event.organizerId !== user.id && user.role !== 'admin') {
+      throw new ForbiddenException(
+        'You can only view registrations for your own events',
+      );
+    }
+
     return this.registrationRepository.find({
       where: { eventId },
       relations: ['user'],
@@ -284,7 +366,7 @@ export class RegistrationService {
     for (const stat of stats) {
       const count = parseInt((stat as { count: string }).count);
       result.total += count;
-      
+
       switch ((stat as { status: RegistrationStatus }).status) {
         case RegistrationStatus.PENDING:
           result.pending = count;
@@ -305,5 +387,32 @@ export class RegistrationService {
     }
 
     return result;
+  }
+
+  async getMyEventStats(
+    eventId: string,
+    user: User,
+  ): Promise<{
+    total: number;
+    pending: number;
+    confirmed: number;
+    cancelled: number;
+    attended: number;
+    noShow: number;
+  }> {
+    // First, check if the user is the organizer of this event
+    const event = await this.eventService.findOne(eventId);
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    if (event.organizerId !== user.id && user.role !== 'admin') {
+      throw new ForbiddenException(
+        'You can only view statistics for your own events',
+      );
+    }
+
+    // Use the existing getEventStats method
+    return this.getEventStats(eventId);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -31,7 +35,10 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string, includePassword = false): Promise<User | null> {
+  async findByEmail(
+    email: string,
+    includePassword = false,
+  ): Promise<User | null> {
     const selectFields = ['id', 'email', 'role', 'createdAt', 'updatedAt'];
     if (includePassword) {
       selectFields.push('password');
@@ -45,8 +52,11 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-      console.log('UsersService.create called with:', { ...createUserDto, password: '[HIDDEN]' });
-      
+      console.log('UsersService.create called with:', {
+        ...createUserDto,
+        password: '[HIDDEN]',
+      });
+
       // ตรวจสอบว่า email ซ้ำหรือไม่
       const existingUser = await this.findByEmail(createUserDto.email);
       if (existingUser) {
@@ -58,10 +68,14 @@ export class UsersService {
       const user = this.userRepository.create(createUserDto);
       console.log('User entity created, saving to database...');
       const savedUser = await this.userRepository.save(user);
-      console.log('User saved successfully:', { id: savedUser.id, email: savedUser.email });
+      console.log('User saved successfully:', {
+        id: savedUser.id,
+        email: savedUser.email,
+      });
 
       // ส่งกลับโดยไม่มี password
-      const { password, ...result } = savedUser;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _, ...result } = savedUser;
       return result as User;
     } catch (error) {
       console.error('Error in UsersService.create:', error);
@@ -93,7 +107,8 @@ export class UsersService {
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.findByEmail(email, true); // รวม password
     if (user && (await user.validatePassword(password))) {
-      const { password, ...result } = user;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _, ...result } = user;
       return result as User;
     }
     return null;
@@ -118,7 +133,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    
+
     await this.userRepository.update(user.id, {
       emailVerificationToken: token,
     });

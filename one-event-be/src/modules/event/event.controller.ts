@@ -84,7 +84,10 @@ export class EventController {
         properties: {
           id: { type: 'string', example: 'uuid-string' },
           title: { type: 'string', example: 'Tech Conference 2024' },
-          description: { type: 'string', example: 'An amazing tech conference' },
+          description: {
+            type: 'string',
+            example: 'An amazing tech conference',
+          },
           startDate: { type: 'string', example: '2024-06-01T10:00:00.000Z' },
           endDate: { type: 'string', example: '2024-06-01T18:00:00.000Z' },
           location: { type: 'string', example: 'Bangkok, Thailand' },
@@ -110,7 +113,10 @@ export class EventController {
         properties: {
           id: { type: 'string', example: 'uuid-string' },
           title: { type: 'string', example: 'Tech Conference 2024' },
-          description: { type: 'string', example: 'An amazing tech conference' },
+          description: {
+            type: 'string',
+            example: 'An amazing tech conference',
+          },
           startDate: { type: 'string', example: '2024-06-01T10:00:00.000Z' },
           endDate: { type: 'string', example: '2024-06-01T18:00:00.000Z' },
           location: { type: 'string', example: 'Bangkok, Thailand' },
@@ -138,7 +144,10 @@ export class EventController {
         properties: {
           id: { type: 'string', example: 'uuid-string' },
           title: { type: 'string', example: 'Tech Conference 2024' },
-          description: { type: 'string', example: 'An amazing tech conference' },
+          description: {
+            type: 'string',
+            example: 'An amazing tech conference',
+          },
           startDate: { type: 'string', example: '2024-06-01T10:00:00.000Z' },
           endDate: { type: 'string', example: '2024-06-01T18:00:00.000Z' },
           location: { type: 'string', example: 'Bangkok, Thailand' },
@@ -193,7 +202,10 @@ export class EventController {
       properties: {
         id: { type: 'string', example: 'uuid-string' },
         title: { type: 'string', example: 'Updated Tech Conference 2024' },
-        description: { type: 'string', example: 'An updated amazing tech conference' },
+        description: {
+          type: 'string',
+          example: 'An updated amazing tech conference',
+        },
         startDate: { type: 'string', example: '2024-06-01T10:00:00.000Z' },
         endDate: { type: 'string', example: '2024-06-01T18:00:00.000Z' },
         location: { type: 'string', example: 'Bangkok, Thailand' },
@@ -253,7 +265,10 @@ export class EventController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Event not found' })
-  publishEvent(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: User) {
+  publishEvent(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: User,
+  ) {
     return this.eventService.publishEvent(id, user);
   }
 
@@ -278,7 +293,10 @@ export class EventController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Event not found' })
-  cancelEvent(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: User) {
+  cancelEvent(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: User,
+  ) {
     return this.eventService.cancelEvent(id, user);
   }
 
@@ -303,7 +321,10 @@ export class EventController {
         properties: {
           id: { type: 'string', example: 'uuid-string' },
           title: { type: 'string', example: 'Tech Conference 2024' },
-          description: { type: 'string', example: 'An amazing tech conference' },
+          description: {
+            type: 'string',
+            example: 'An amazing tech conference',
+          },
           startDate: { type: 'string', example: '2024-06-01T10:00:00.000Z' },
           endDate: { type: 'string', example: '2024-06-01T18:00:00.000Z' },
           location: { type: 'string', example: 'Bangkok, Thailand' },
@@ -331,13 +352,20 @@ export class EventController {
     description: 'Landing page configuration updated successfully',
   })
   @ApiResponse({ status: 404, description: 'Event not found' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Only event organizer can edit' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Only event organizer can edit',
+  })
   updateLandingPage(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateLandingPageDto: UpdateEventLandingPageDto,
     @CurrentUser() user: User,
   ) {
-    return this.eventService.updateLandingPage(id, updateLandingPageDto, user.id);
+    return this.eventService.updateLandingPage(
+      id,
+      updateLandingPageDto,
+      user.id,
+    );
   }
 
   @Get(':id/landing-page')
@@ -392,7 +420,9 @@ export class EventController {
   @Post(':id/landing-page/preview')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Preview landing page with temporary configuration' })
+  @ApiOperation({
+    summary: 'Preview landing page with temporary configuration',
+  })
   @ApiParam({ name: 'id', description: 'Event ID', type: 'string' })
   @ApiBody({ type: UpdateEventLandingPageDto })
   @ApiResponse({

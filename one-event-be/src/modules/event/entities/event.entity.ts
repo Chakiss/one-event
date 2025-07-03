@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../../users/entities/user.entity';
+import { Registration } from '../../registration/entities/registration.entity';
 
 export enum EventStatus {
   DRAFT = 'draft',
@@ -148,6 +149,65 @@ export class Event {
   @Column({ type: 'varchar', length: 100, nullable: true, unique: true })
   slug: string; // URL-friendly identifier for the landing page
 
+  // Custom Registration Fields Configuration
+  @Column({ type: 'json', nullable: true })
+  registrationFields: {
+    fields: Array<{
+      id: string;
+      type:
+        | 'text'
+        | 'email'
+        | 'phone'
+        | 'select'
+        | 'multiselect'
+        | 'textarea'
+        | 'checkbox'
+        | 'radio'
+        | 'date'
+        | 'number';
+      label: string;
+      placeholder?: string;
+      required: boolean;
+      options?: string[]; // For select, multiselect, radio
+      validation?: {
+        minLength?: number;
+        maxLength?: number;
+        pattern?: string;
+        min?: number;
+        max?: number;
+      };
+      order: number;
+      visible: boolean;
+    }>;
+    requiredFields: string[]; // Standard fields that are always required
+    optionalFields: string[]; // Standard fields that are optional
+  };
+
+  // Email Campaign Settings
+  @Column({ type: 'json', nullable: true })
+  emailCampaignConfig: {
+    enabled: boolean;
+    templates: {
+      invitation?: {
+        subject: string;
+        htmlContent: string;
+        textContent: string;
+      };
+      confirmation?: {
+        subject: string;
+        htmlContent: string;
+        textContent: string;
+      };
+      reminder?: {
+        subject: string;
+        htmlContent: string;
+        textContent: string;
+        sendDaysBefore: number[];
+      };
+    };
+    trackingEnabled: boolean;
+  };
+
   // Relations
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'organizerId' })
@@ -156,8 +216,8 @@ export class Event {
   @Column()
   organizerId: string;
 
-  @OneToMany('Registration', (registration: any) => registration.event)
-  registrations: any[];
+  @OneToMany(() => Registration, (registration) => registration.event)
+  registrations: Registration[];
 
   // Timestamps
   @CreateDateColumn()

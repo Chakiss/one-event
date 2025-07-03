@@ -20,9 +20,14 @@ export class EventService {
     private readonly eventRepository: Repository<Event>,
   ) {}
 
-  async create(createEventDto: CreateEventDto, organizer: User): Promise<Event> {
+  async create(
+    createEventDto: CreateEventDto,
+    organizer: User,
+  ): Promise<Event> {
     // Validate dates
-    if (new Date(createEventDto.startDate) >= new Date(createEventDto.endDate)) {
+    if (
+      new Date(createEventDto.startDate) >= new Date(createEventDto.endDate)
+    ) {
       throw new BadRequestException('End date must be after start date');
     }
 
@@ -33,7 +38,8 @@ export class EventService {
     // Validate registration deadline
     if (
       createEventDto.registrationDeadline &&
-      new Date(createEventDto.registrationDeadline) > new Date(createEventDto.startDate)
+      new Date(createEventDto.registrationDeadline) >
+        new Date(createEventDto.startDate)
     ) {
       throw new BadRequestException(
         'Registration deadline must be before start date',
@@ -82,8 +88,12 @@ export class EventService {
     }
 
     if (filters.startDate || filters.endDate) {
-      const startDate = filters.startDate ? new Date(filters.startDate) : new Date('1900-01-01');
-      const endDate = filters.endDate ? new Date(filters.endDate) : new Date('2100-12-31');
+      const startDate = filters.startDate
+        ? new Date(filters.startDate)
+        : new Date('1900-01-01');
+      const endDate = filters.endDate
+        ? new Date(filters.endDate)
+        : new Date('2100-12-31');
       where.startDate = Between(startDate, endDate);
     }
 
@@ -176,7 +186,9 @@ export class EventService {
 
     // Don't allow deleting events that already started (unless admin)
     if (user.role !== 'admin' && event.startDate <= new Date()) {
-      throw new BadRequestException('Cannot delete events that have already started');
+      throw new BadRequestException(
+        'Cannot delete events that have already started',
+      );
     }
 
     await this.eventRepository.remove(event);
@@ -195,8 +207,15 @@ export class EventService {
     }
 
     // Validate event is ready for publishing
-    if (!event.title || !event.description || !event.startDate || !event.location) {
-      throw new BadRequestException('Event is missing required information for publishing');
+    if (
+      !event.title ||
+      !event.description ||
+      !event.startDate ||
+      !event.location
+    ) {
+      throw new BadRequestException(
+        'Event is missing required information for publishing',
+      );
     }
 
     await this.eventRepository.update(id, { status: EventStatus.PUBLISHED });
@@ -237,7 +256,7 @@ export class EventService {
       const existingEvent = await this.eventRepository.findOne({
         where: { slug: updateLandingPageDto.slug },
       });
-      
+
       if (existingEvent && existingEvent.id !== id) {
         throw new BadRequestException('Slug already exists');
       }

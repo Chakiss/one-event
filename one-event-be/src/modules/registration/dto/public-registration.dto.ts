@@ -1,56 +1,50 @@
 import {
-  IsString,
-  IsNotEmpty,
+  IsEmail,
   IsOptional,
+  IsString,
   IsObject,
   IsUUID,
-  IsEmail,
 } from 'class-validator';
 
-export class CreateRegistrationDto {
-  @IsString()
-  @IsNotEmpty()
+export class PublicRegistrationDto {
+  @IsOptional()
   @IsUUID()
-  eventId: string;
-
-  @IsString()
-  @IsOptional()
-  notes?: string;
-
-  @IsObject()
-  @IsOptional()
-  additionalInfo?: Record<string, any>;
+  userId?: string; // For authenticated users
 
   // Guest registration fields
-  @IsString()
   @IsOptional()
+  @IsString()
   guestName?: string;
 
-  @IsEmail()
   @IsOptional()
+  @IsEmail()
   guestEmail?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   guestPhone?: string;
 
-  @IsObject()
   @IsOptional()
+  @IsObject()
   customFields?: Record<string, any>;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   registrationSource?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   utmSource?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   utmMedium?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   utmCampaign?: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }

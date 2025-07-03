@@ -36,7 +36,10 @@ export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Register for an event' })
+  @ApiOperation({
+    summary:
+      'Register for an event (supports both authenticated users and guests)',
+  })
   @ApiBody({ type: CreateRegistrationDto })
   @ApiResponse({
     status: 201,
@@ -53,11 +56,10 @@ export class RegistrationController {
     },
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 409, description: 'Already registered or event full' })
   register(
     @Body() createRegistrationDto: CreateRegistrationDto,
-    @CurrentUser() user: User,
+    @CurrentUser() user?: User,
   ) {
     return this.registrationService.register(createRegistrationDto, user);
   }
@@ -111,7 +113,10 @@ export class RegistrationController {
             type: 'object',
             properties: {
               title: { type: 'string', example: 'Tech Conference 2024' },
-              startDate: { type: 'string', example: '2024-06-01T10:00:00.000Z' },
+              startDate: {
+                type: 'string',
+                example: '2024-06-01T10:00:00.000Z',
+              },
               location: { type: 'string', example: 'Bangkok, Thailand' },
             },
           },
@@ -259,7 +264,10 @@ export class RegistrationController {
       properties: {
         id: { type: 'string', example: 'uuid-string' },
         status: { type: 'string', example: 'cancelled' },
-        message: { type: 'string', example: 'Registration cancelled successfully' },
+        message: {
+          type: 'string',
+          example: 'Registration cancelled successfully',
+        },
       },
     },
   })
@@ -283,7 +291,10 @@ export class RegistrationController {
       properties: {
         id: { type: 'string', example: 'uuid-string' },
         status: { type: 'string', example: 'confirmed' },
-        message: { type: 'string', example: 'Registration confirmed successfully' },
+        message: {
+          type: 'string',
+          example: 'Registration confirmed successfully',
+        },
       },
     },
   })
@@ -307,7 +318,10 @@ export class RegistrationController {
       properties: {
         id: { type: 'string', example: 'uuid-string' },
         status: { type: 'string', example: 'attended' },
-        message: { type: 'string', example: 'Registration marked as attended successfully' },
+        message: {
+          type: 'string',
+          example: 'Registration marked as attended successfully',
+        },
       },
     },
   })
@@ -321,11 +335,76 @@ export class RegistrationController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete registration' })
   @ApiParam({ name: 'id', type: 'string', description: 'Registration UUID' })
-  @ApiResponse({ status: 204, description: 'Registration deleted successfully' })
+  @ApiResponse({
+    status: 204,
+    description: 'Registration deleted successfully',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Registration not found' })
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.registrationService.remove(id, user);
+  }
+
+  @Get('my-event/:eventId')
+  @ApiOperation({ summary: 'Get registrations for my event (Event organizer)' })
+  @ApiParam({ name: 'eventId', type: 'string', description: 'Event UUID' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of registrations for your event',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', example: 'uuid-string' },
+          eventId: { type: 'string', example: 'uuid-string' },
+          userId: { type: 'string', example: 'uuid-string' },
+          status: { type: 'string', example: 'confirmed' },
+          guestName: { type: 'string', example: 'John Doe' },
+          guestEmail: { type: 'string', example: 'john@example.com' },
+          registeredAt: { type: 'string', example: '2023-12-07T10:30:00.000Z' },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not event organizer' })
+  @ApiResponse({ status: 404, description: 'Event not found' })
+  findMyEventRegistrations(
+    @Param('eventId') eventId: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.registrationService.findMyEventRegistrations(eventId, user);
+  }
+
+  @Get('my-event/:eventId/stats')
+  @ApiOperation({
+    summary: 'Get registration statistics for my event (Event organizer)',
+  })
+  @ApiParam({ name: 'eventId', type: 'string', description: 'Event UUID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Event registration statistics for your event',
+    schema: {
+      type: 'object',
+      properties: {
+        total: { type: 'number', example: 50 },
+        pending: { type: 'number', example: 5 },
+        confirmed: { type: 'number', example: 40 },
+        cancelled: { type: 'number', example: 3 },
+        attended: { type: 'number', example: 35 },
+        noShow: { type: 'number', example: 5 },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not event organizer' })
+  @ApiResponse({ status: 404, description: 'Event not found' })
+  getMyEventStats(
+    @Param('eventId') eventId: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.registrationService.getMyEventStats(eventId, user);
   }
 }

@@ -13,11 +13,11 @@ import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Increase body size limit to handle larger payloads
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ limit: '10mb', extended: true }));
-  
+
   // Enable CORS for frontend communication
   app.enableCors({
     origin: [
@@ -37,7 +37,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
-  
+
   // เปิดใช้งาน Validation Pipe แบบ Global
   app.useGlobalPipes(
     new ValidationPipe({
@@ -85,7 +85,7 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port, '0.0.0.0');
-  
+
   console.log(`🚀 Application is running on: http://0.0.0.0:${port}`);
   console.log(`📚 Swagger documentation: http://0.0.0.0:${port}/api`);
 }

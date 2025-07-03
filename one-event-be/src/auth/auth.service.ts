@@ -22,9 +22,9 @@ export class AuthService {
 
   async login(user: User): Promise<AuthResponse> {
     const payload = { email: user.email, sub: user.id, role: user.role };
-    
+
     const token = await this.jwtService.signAsync(payload);
-    
+
     return {
       access_token: token,
       user: {
@@ -37,26 +37,34 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: RegisterDto): Promise<{ message: string; user: Partial<User> }> {
+  async register(
+    registerDto: RegisterDto,
+  ): Promise<{ message: string; user: Partial<User> }> {
     try {
       console.log('AuthService.register called with:', registerDto);
-      
+
       // Generate verification token
       const verificationToken = crypto.randomBytes(32).toString('hex');
-      
+
       // Add verification token to user data
       const userWithToken = {
         ...registerDto,
         emailVerificationToken: verificationToken,
         isEmailVerified: false,
       };
-      
-      console.log('Creating user with token:', { ...userWithToken, password: '[HIDDEN]' });
-      
+
+      console.log('Creating user with token:', {
+        ...userWithToken,
+        password: '[HIDDEN]',
+      });
+
       const user = await this.usersService.create(userWithToken);
-      
-      console.log('User created successfully:', { id: user.id, email: user.email });
-      
+
+      console.log('User created successfully:', {
+        id: user.id,
+        email: user.email,
+      });
+
       // Send verification email
       try {
         await this.emailService.sendVerificationEmail(
@@ -69,9 +77,10 @@ export class AuthService {
         console.error('Failed to send verification email:', emailError);
         // Don't fail registration if email sending fails
       }
-    
+
       return {
-        message: 'User registered successfully. Please check your email to verify your account.',
+        message:
+          'User registered successfully. Please check your email to verify your account.',
         user: {
           id: user.id,
           email: user.email,
@@ -85,9 +94,11 @@ export class AuthService {
     }
   }
 
-  async verifyEmail(verifyEmailDto: VerifyEmailDto): Promise<{ message: string }> {
+  async verifyEmail(
+    verifyEmailDto: VerifyEmailDto,
+  ): Promise<{ message: string }> {
     const { token } = verifyEmailDto;
-    
+
     // Find user by verification token
     const user = await this.usersService.findByVerificationToken(token);
     if (!user) {
@@ -96,7 +107,7 @@ export class AuthService {
 
     // Update user as verified
     await this.usersService.markEmailAsVerified(user.id);
-    
+
     return { message: 'Email verified successfully' };
   }
 
@@ -113,10 +124,10 @@ export class AuthService {
 
     // Generate new verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    
+
     // Update user with new token
     await this.usersService.updateVerificationToken(email, verificationToken);
-    
+
     // Send verification email
     try {
       await this.emailService.sendVerificationEmail(
@@ -129,7 +140,7 @@ export class AuthService {
       console.error('Failed to resend verification email:', emailError);
       throw new BadRequestException('Failed to send verification email');
     }
-    
+
     return { message: 'Verification email sent successfully' };
   }
 

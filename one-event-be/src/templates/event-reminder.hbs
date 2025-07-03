@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Reminder - {{eventTitle}}</title>
+    <style>
+        body {
+            font-family: -webkit-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .countdown {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .countdown h2 {
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .countdown .time {
+            font-size: 20px;
+            font-weight: bold;
+            color: #047857;
+        }
+        .content {
+            padding: 30px;
+        }
+        .event-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            margin: 10px 0;
+            align-items: center;
+        }
+        .detail-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            fill: #6b7280;
+        }
+        .checklist {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .checklist h3 {
+            color: #92400e;
+            margin: 0 0 15px 0;
+        }
+        .checklist ul {
+            margin: 0;
+            color: #78350f;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #059669;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #059669;
+            text-decoration: none;
+        }
+        .qr-section {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 8px;
+        }
+        .qr-code {
+            max-width: 120px;
+            height: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Event Reminder</h1>
+            <p>Don't forget about your upcoming event!</p>
+        </div>
+        
+        <div class="content">
+            <div class="countdown">
+                <h2>{{timeUntilEvent}}</h2>
+                <p class="time">Until {{eventTitle}}</p>
+            </div>
+            
+            <p>Hello <strong>{{guestName}}</strong>,</p>
+            
+            <p>This is a friendly reminder that you're registered for <strong>{{eventTitle}}</strong>. We're looking forward to seeing you there!</p>
+            
+            <div class="event-details">
+                <h2>Event Details</h2>
+                
+                <div class="detail-row">
+                    <svg class="detail-icon" viewBox="0 0 24 24">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    <div>
+                        <strong>Date:</strong> {{eventDate}}<br>
+                        <strong>Time:</strong> {{eventTime}}
+                    </div>
+                </div>
+                
+                {{#if eventLocation}}
+                <div class="detail-row">
+                    <svg class="detail-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <div>
+                        <strong>Location:</strong> {{eventLocation}}
+                    </div>
+                </div>
+                {{/if}}
+                
+                <div class="detail-row">
+                    <svg class="detail-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    <div>
+                        <strong>Registration ID:</strong> {{registrationId}}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checklist">
+                <h3>📋 Pre-Event Checklist</h3>
+                <ul>
+                    <li>Mark your calendar and set a reminder</li>
+                    <li>Plan your route to the venue</li>
+                    {{#if qrCodeUrl}}
+                    <li>Save your QR code for quick check-in</li>
+                    {{/if}}
+                    <li>Prepare any materials you might need</li>
+                    <li>Arrive 15 minutes early</li>
+                    <li>Bring a valid ID</li>
+                </ul>
+            </div>
+            
+            {{#if qrCodeUrl}}
+            <div class="qr-section">
+                <h3>Your Check-in QR Code</h3>
+                <img src="{{qrCodeUrl}}" alt="Registration QR Code" class="qr-code">
+                <p><small>Show this at the event entrance</small></p>
+            </div>
+            {{/if}}
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{eventUrl}}" class="btn">View Full Event Details</a>
+            </div>
+            
+            {{#if eventInstructions}}
+            <div style="margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 8px;">
+                <h3 style="color: #0369a1; margin: 0 0 10px 0;">Special Instructions</h3>
+                <p style="margin: 0; color: #0c4a6e;">{{eventInstructions}}</p>
+            </div>
+            {{/if}}
+            
+            <p style="margin-top: 30px;">
+                If you can no longer attend, please let us know as soon as possible so we can offer your spot to someone else.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>Questions? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+            <p>
+                <a href="{{eventUrl}}">Event Details</a> | 
+                <a href="{{cancelUrl}}">Cancel Registration</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

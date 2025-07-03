@@ -19,7 +19,7 @@ export class EmailService {
     const emailSecure = this.configService.get<boolean>('EMAIL_SECURE', false);
 
     this.logger.log('Creating email transporter...');
-    
+
     if (!emailHost || !emailUser || !emailPass) {
       this.logger.warn(
         'Email configuration is incomplete. Email sending will be simulated.',
@@ -46,10 +46,20 @@ export class EmailService {
     }
   }
 
-  async sendVerificationEmail(email: string, token: string, name: string): Promise<void> {
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL', 'http://localhost:3002');
+  async sendVerificationEmail(
+    email: string,
+    token: string,
+    name: string,
+  ): Promise<void> {
+    const frontendUrl = this.configService.get<string>(
+      'FRONTEND_URL',
+      'http://localhost:3002',
+    );
     const verificationLink = `${frontendUrl}/auth/verify-email?token=${token}`;
-    const emailFrom = this.configService.get<string>('EMAIL_FROM', 'OneEvent <noreply@oneevent.com>');
+    const emailFrom = this.configService.get<string>(
+      'EMAIL_FROM',
+      'OneEvent <noreply@oneevent.com>',
+    );
 
     const mailOptions = {
       from: emailFrom,
@@ -60,7 +70,9 @@ export class EmailService {
 
     try {
       if (!this.transporter) {
-        this.logger.log('Email transporter not configured. Simulating email send...');
+        this.logger.log(
+          'Email transporter not configured. Simulating email send...',
+        );
         this.logger.log(`--- SIMULATED EMAIL ---`);
         this.logger.log(`To: ${email}`);
         this.logger.log(`Subject: ${mailOptions.subject}`);
@@ -71,17 +83,24 @@ export class EmailService {
       }
 
       const info = await this.transporter.sendMail(mailOptions);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       this.logger.log(
         `Verification email sent to ${email}: ${info.messageId || 'unknown'}`,
       );
     } catch (error) {
-      this.logger.error(`Failed to send verification email to ${email}:`, error);
+      this.logger.error(
+        `Failed to send verification email to ${email}:`,
+        error,
+      );
       throw new Error('Failed to send verification email');
     }
   }
 
-  private getVerificationEmailTemplate(name: string, verificationLink: string, token: string): string {
+  private getVerificationEmailTemplate(
+    name: string,
+    verificationLink: string,
+    token: string,
+  ): string {
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -205,10 +224,20 @@ export class EmailService {
     `;
   }
 
-  async sendPasswordResetEmail(email: string, token: string, name: string): Promise<void> {
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL', 'http://localhost:3002');
+  async sendPasswordResetEmail(
+    email: string,
+    token: string,
+    name: string,
+  ): Promise<void> {
+    const frontendUrl = this.configService.get<string>(
+      'FRONTEND_URL',
+      'http://localhost:3002',
+    );
     const resetLink = `${frontendUrl}/auth/reset-password?token=${token}`;
-    const emailFrom = this.configService.get<string>('EMAIL_FROM', 'OneEvent <noreply@oneevent.com>');
+    const emailFrom = this.configService.get<string>(
+      'EMAIL_FROM',
+      'OneEvent <noreply@oneevent.com>',
+    );
 
     const mailOptions = {
       from: emailFrom,
@@ -219,7 +248,9 @@ export class EmailService {
 
     try {
       if (!this.transporter) {
-        this.logger.log('Email transporter not configured. Simulating password reset email...');
+        this.logger.log(
+          'Email transporter not configured. Simulating password reset email...',
+        );
         this.logger.log(`--- SIMULATED EMAIL ---`);
         this.logger.log(`To: ${email}`);
         this.logger.log(`Subject: ${mailOptions.subject}`);
@@ -230,15 +261,21 @@ export class EmailService {
 
       const info = await this.transporter.sendMail(mailOptions);
       this.logger.log(
-        `Password reset email sent to ${email}: ${(info as any).messageId || 'unknown'}`,
+        `Password reset email sent to ${email}: ${info.messageId || 'unknown'}`,
       );
     } catch (error) {
-      this.logger.error(`Failed to send password reset email to ${email}:`, error);
+      this.logger.error(
+        `Failed to send password reset email to ${email}:`,
+        error,
+      );
       throw new Error('Failed to send password reset email');
     }
   }
 
-  private getPasswordResetEmailTemplate(name: string, resetLink: string): string {
+  private getPasswordResetEmailTemplate(
+    name: string,
+    resetLink: string,
+  ): string {
     return `
     <!DOCTYPE html>
     <html lang="en">

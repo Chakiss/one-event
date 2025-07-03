@@ -25,7 +25,7 @@ class ApiClient {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://one-event-api-prod-zwxzaz56uq-as.a.run.app';
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
     console.log('🔗 API Client initialized with baseURL:', this.baseURL);
     
     this.client = axios.create({
@@ -68,15 +68,44 @@ class ApiClient {
 
   // Token management
   private getToken(): string | undefined {
-    return Cookies.get('auth_token');
+    // Try cookies first
+    let token = Cookies.get('auth_token');
+    
+    // Fallback to localStorage if cookies don't work
+    if (!token && typeof window !== 'undefined') {
+      token = localStorage.getItem('auth_token') || undefined;
+    }
+    
+    console.log('Getting token:', token ? `Token exists (${token.substring(0, 20)}...)` : 'No token found');
+    return token;
   }
 
   private setToken(token: string): void {
-    Cookies.set('auth_token', token, { expires: 7 }); // 7 days
+    console.log('Setting token:', token ? `Token (${token.substring(0, 20)}...)` : 'No token');
+    
+    // Set in cookies
+    Cookies.set('auth_token', token, { 
+      expires: 7, // 7 days
+      path: '/',
+      sameSite: 'lax'
+    });
+    
+    // Also set in localStorage as fallback
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', token);
+    }
   }
 
   private removeToken(): void {
-    Cookies.remove('auth_token');
+    console.log('Removing token from storage');
+    
+    // Remove from cookies
+    Cookies.remove('auth_token', { path: '/' });
+    
+    // Remove from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
   }
 
   // Auth API
@@ -218,12 +247,14 @@ class ApiClient {
   }
 
   async getEventRegistrations(eventId: string): Promise<Registration[]> {
-    const response: AxiosResponse<Registration[]> = await this.client.get(`/registrations/event/${eventId}`);
+    const response: AxiosResponse<Registration[]> = await this.client.get(`/registrations/my-event/${eventId}`);
     return response.data;
   }
 
   async getEventStats(eventId: string): Promise<RegistrationStats> {
-    const response: AxiosResponse<RegistrationStats> = await this.client.get(`/registrations/event/${eventId}/stats`);
+    console.log(`Calling /registrations/my-event/${eventId}/stats`);
+    const response: AxiosResponse<RegistrationStats> = await this.client.get(`/registrations/my-event/${eventId}/stats`);
+    console.log(`Stats response for event ${eventId}:`, response.data);
     return response.data;
   }
 
@@ -265,6 +296,82 @@ class ApiClient {
   async getHealth(): Promise<HealthResponse> {
     const response: AxiosResponse<HealthResponse> = await this.client.get('/health');
     return response.data;
+  }
+
+  // Dashboard API
+  async getDashboardData(): Promise<Event[]> {
+    // Get events with registration counts
+    const response: AxiosResponse<Event[]> = await this.client.get('/events/my-events');
+    console.log('My events response:', response.data);
+    
+    // For each event, fetch registration stats
+    const eventsWithStats = await Promise.all(
+      response.data.map(async (event) => {
+        try {
+          console.log(`Fetching stats for event ${event.id} (${event.title})`);
+          
+          // Try to get stats first
+          try {
+            const stats = await this.getEventStats(event.id);
+            console.log(`Stats for event ${event.id}:`, stats);
+            return {
+              ...event,
+              _count: {
+                registrations: stats.total || 0
+              }
+            };
+          } catch (statsError) {
+            console.warn(`Stats endpoint failed for ${event.id}, trying registrations endpoint:`, statsError);
+            
+            // Fallback: get registrations and count them
+            const registrations = await this.getEventRegistrations(event.id);
+            console.log(`Direct registrations for event ${event.id}:`, registrations.length);
+            return {
+              ...event,
+              _count: {
+                registrations: registrations.length
+              }
+            };
+          }
+        } catch (error) {
+          console.warn(`Failed to fetch any data for event ${event.id}:`, error);
+          return {
+            ...event,
+            _count: {
+              registrations: 0
+            }
+          };
+        }
+      })
+    );
+    
+    return eventsWithStats;
+  }
+
+  // Generic HTTP methods
+  async get<T>(url: string): Promise<{ data: T }> {
+    const response = await this.client.get<T>(url);
+    return { data: response.data };
+  }
+
+  async post<T>(url: string, data?: unknown): Promise<{ data: T }> {
+    const response = await this.client.post<T>(url, data);
+    return { data: response.data };
+  }
+
+  async patch<T>(url: string, data?: unknown): Promise<{ data: T }> {
+    const response = await this.client.patch<T>(url, data);
+    return { data: response.data };
+  }
+
+  async put<T>(url: string, data?: unknown): Promise<{ data: T }> {
+    const response = await this.client.put<T>(url, data);
+    return { data: response.data };
+  }
+
+  async delete<T>(url: string): Promise<{ data: T }> {
+    const response = await this.client.delete<T>(url);
+    return { data: response.data };
   }
 
   // Utility methods

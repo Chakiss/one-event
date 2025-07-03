@@ -1,4 +1,11 @@
-import { IsEmail, IsString, MinLength, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  MinLength,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -18,27 +25,47 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({ description: 'ชื่อบริษัท', example: 'ABC Corporation', required: false })
+  @ApiProperty({
+    description: 'ชื่อบริษัท',
+    example: 'ABC Corporation',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   company?: string;
 
-  @ApiProperty({ description: 'ตำแหน่งงาน', example: 'Project Manager', required: false })
+  @ApiProperty({
+    description: 'ตำแหน่งงาน',
+    example: 'Project Manager',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   position?: string;
 
-  @ApiProperty({ description: 'หมายเลขโทรศัพท์', example: '+66812345678', required: false })
+  @ApiProperty({
+    description: 'หมายเลขโทรศัพท์',
+    example: '+66812345678',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   phone?: string;
 
-  @ApiProperty({ description: 'แผนก/ฝ่าย', example: 'IT Department', required: false })
+  @ApiProperty({
+    description: 'แผนก/ฝ่าย',
+    example: 'IT Department',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   department?: string;
 
-  @ApiProperty({ description: 'บทบาท', enum: ['admin', 'guest', 'manager'], default: 'guest' })
+  @ApiProperty({
+    description: 'บทบาท',
+    enum: ['admin', 'guest', 'manager'],
+    default: 'guest',
+  })
   @IsEnum(['admin', 'guest', 'manager'])
   role: 'admin' | 'guest' | 'manager';
 }

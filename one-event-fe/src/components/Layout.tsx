@@ -54,6 +54,12 @@ export default function Layout({ children }: LayoutProps) {
     router.pathname === route || router.pathname.startsWith('/auth/')
   );
 
+  // Check if current route is a registration page (should have minimal layout)
+  const isRegistrationPage = router.pathname.includes('/register');
+  
+  // Check if current route is dashboard page (should not have sidebar)
+  const isDashboardPage = router.pathname === '/dashboard';
+
   const handleLogout = async () => {
     await logout();
     router.push('/auth/login');
@@ -71,6 +77,17 @@ export default function Layout({ children }: LayoutProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  // Minimal layout for registration pages (no navigation)
+  if (isRegistrationPage) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <main className="flex-1">
+          {children}
+        </main>
       </div>
     );
   }
@@ -134,6 +151,81 @@ export default function Layout({ children }: LayoutProps) {
         <main className="flex-1">
           {children}
         </main>
+      </div>
+    );
+  }
+
+  // Dashboard layout without sidebar
+  if (isDashboardPage) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Main content without sidebar */}
+        <div className="flex flex-col flex-1">
+          {/* Top navigation */}
+          <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200">
+            <div className="flex h-16 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6 lg:px-8">
+              <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+                {/* Search bar */}
+                <div className="flex flex-1 items-center">
+                  <div className="relative max-w-md w-full">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Search className="h-4 w-4 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="ค้นหากิจกรรม..."
+                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                
+                {/* Right side */}
+                <div className="flex items-center gap-x-4 lg:gap-x-6">
+                  {user && (
+                    <>
+                      {/* Notifications */}
+                      <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                        <Bell className="h-5 w-5" />
+                        <span className="absolute top-1 right-1 block h-2 w-2 bg-red-500 rounded-full"></span>
+                      </button>
+                      
+                      {/* User info */}
+                      <div className="flex items-center gap-x-3">
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-gray-900">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {user.email}
+                          </p>
+                        </div>
+                        {isAdmin && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Admin
+                          </span>
+                        )}
+                      </div>
+                      
+                      {/* Logout */}
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-x-2 px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        ออกจากระบบ
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Page content */}
+          <main className="flex-1">
+            {children}
+          </main>
+        </div>
       </div>
     );
   }

@@ -91,6 +91,9 @@ export interface Event {
   customCss?: string;
   customJs?: string;
   slug?: string;
+  // Registration fields
+  registrationFields?: RegistrationFieldsConfig;
+  emailCampaignConfig?: EmailCampaignConfig;
 }
 
 export interface CreateEventRequest {
@@ -107,6 +110,7 @@ export interface CreateEventRequest {
   requirements?: string;
   agenda?: string;
   address?: string;
+  registrationFields?: RegistrationFieldsConfig;
 }
 
 export type UpdateEventRequest = Partial<CreateEventRequest> & {
@@ -142,25 +146,39 @@ export interface UpdateLandingPageRequest {
 export interface Registration {
   id: string;
   eventId: string;
-  userId: string;
+  userId?: string;
   status: 'pending' | 'confirmed' | 'cancelled' | 'attended';
   registeredAt: string;
   updatedAt: string;
   event?: Event;
   user?: User;
+  // Guest registration fields
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  customFields?: Record<string, unknown>;
+  // Additional tracking fields
+  ipAddress?: string;
+  userAgent?: string;
+  registrationSource?: string;
 }
 
 export interface CreateRegistrationRequest {
   eventId: string;
+  // For guest registration
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  customFields?: Record<string, unknown>;
 }
 
 export interface RegistrationStats {
-  totalRegistrations: number;
-  confirmedRegistrations: number;
-  cancelledRegistrations: number;
-  attendedCount: number;
-  maxAttendees: number;
-  availableSpots: number;
+  total: number;
+  pending: number;
+  confirmed: number;
+  cancelled: number;
+  attended: number;
+  noShow: number;
 }
 
 // Health Types
@@ -186,4 +204,50 @@ export interface PaginatedEventsResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+// Registration field types
+export interface RegistrationField {
+  id: string;
+  type: 'text' | 'email' | 'phone' | 'select' | 'multiselect' | 'textarea' | 'checkbox' | 'radio' | 'date' | 'number' | 'file' | 'url';
+  label: string;
+  placeholder?: string;
+  required: boolean;
+  options?: string[];
+  validation?: {
+    minLength?: number;
+    maxLength?: number;
+    pattern?: string;
+    min?: number;
+    max?: number;
+    fileTypes?: string[];
+    maxFileSize?: number;
+  };
+  order: number;
+  visible: boolean;
+  helpText?: string;
+}
+
+export interface RegistrationFieldsConfig {
+  fields: RegistrationField[];
+  requiredFields?: string[];
+  optionalFields?: string[];
+}
+
+export interface EmailCampaignConfig {
+  enabled: boolean;
+  templates: {
+    confirmation?: {
+      subject: string;
+      htmlContent: string;
+      textContent?: string;
+    };
+    reminder?: {
+      subject: string;
+      htmlContent: string;
+      textContent?: string;
+      sendDaysBefore?: number[];
+    };
+  };
+  trackingEnabled?: boolean;
 }

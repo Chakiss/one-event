@@ -55,7 +55,7 @@ export class EmailService {
       };
 
       const info = await this.transporter.sendMail(mailOptions);
-      
+
       if (process.env.NODE_ENV !== 'production') {
         console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
       }

@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsArray,
   IsUrl,
+  IsObject,
   Min,
   MinLength,
   MaxLength,
@@ -78,4 +79,12 @@ export class CreateEventDto {
   @IsString()
   @IsOptional()
   registrationDeadline?: string;
+
+  @IsObject()
+  @IsOptional()
+  registrationFields?: any;
+
+  @IsObject()
+  @IsOptional()
+  emailCampaignConfig?: any;
 }
