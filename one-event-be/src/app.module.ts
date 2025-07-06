@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
@@ -13,6 +13,7 @@ import { RegistrationModule } from './modules/registration/registration.module';
 import { CommonModule } from './common/common.module';
 import { getDatabaseConfig } from './config/database.config';
 import { getThrottlerConfig } from './config/throttler.config';
+import { CorsMiddleware } from './middlewares/cors.middleware';
 
 @Module({
   imports: [
@@ -41,4 +42,8 @@ import { getThrottlerConfig } from './config/throttler.config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}

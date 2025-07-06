@@ -19,23 +19,45 @@ async function bootstrap() {
   app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
   // Enable CORS for frontend communication
+  const corsOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:3005',
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:3002',
+    'http://127.0.0.1:3005',
+    'https://one-event-web-prod-712057384144.asia-southeast1.run.app',
+    'https://one-event-web-prod-zwxzaz56uq-as.a.run.app',
+    'https://one-event-frontend-test-zwxzaz56uq-as.a.run.app',
+  ];
+
+  // Add CORS_ORIGIN from environment variables
+  if (process.env.CORS_ORIGIN) {
+    const envOrigins = process.env.CORS_ORIGIN.split(',').map((origin) =>
+      origin.trim(),
+    );
+    corsOrigins.push(...envOrigins);
+  }
+
+  console.log('🔒 CORS Origins:', corsOrigins);
+
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:3005',
-      'http://127.0.0.1:3001',
-      'http://127.0.0.1:3002',
-      'http://127.0.0.1:3005',
-      'https://one-event-web-prod-zwxzaz56uq-as.a.run.app',
-      'https://one-event-frontend-test-zwxzaz56uq-as.a.run.app',
-      process.env.CORS_ORIGIN || 'http://localhost:3000',
-    ],
+    origin: corsOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'Access-Control-Request-Method',
+      'Access-Control-Request-Headers',
+    ],
     credentials: true,
+    optionsSuccessStatus: 200, // for legacy browser support
+    preflightContinue: false, // Pass control to the next handler
   });
 
   // เปิดใช้งาน Validation Pipe แบบ Global

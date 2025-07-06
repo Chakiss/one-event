@@ -2,9 +2,9 @@
 
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
+import { SimpleLogo } from './common/SimpleLogo';
 import {
   CalendarDays,
   Users,
@@ -103,11 +103,8 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex items-center">
                 <Link href="/" className="flex items-center">
                   <div className="relative">
-                    <Image 
-                      src="/logo.png" 
-                      alt="OneEvent Logo" 
-                      width={32} 
-                      height={32}
+                    <SimpleLogo 
+                      size="sm"
                       className="mr-3 drop-shadow-sm"
                     />
                   </div>
@@ -253,11 +250,8 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex flex-shrink-0 items-center px-6 mb-8">
                 <div className="flex items-center">
                   <div className="relative">
-                    <Image 
-                      src="/logo.png" 
-                      alt="OneEvent Logo" 
-                      width={32} 
-                      height={32}
+                    <SimpleLogo 
+                      size="sm"
                       className="mr-3 drop-shadow-sm"
                     />
                   </div>
@@ -303,11 +297,8 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center flex-shrink-0 px-6 mb-8">
               <div className="flex items-center">
                 <div className="relative">
-                  <Image 
-                    src="/logo.png" 
-                    alt="OneEvent Logo" 
-                    width={32} 
-                    height={32}
+                  <SimpleLogo 
+                    size="sm"
                     className="mr-3 drop-shadow-sm"
                   />
                 </div>
