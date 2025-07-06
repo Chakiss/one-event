@@ -268,3 +268,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   <a href="https://github.com/Chakiss/one-event/issues">Report Bug</a> •
   <a href="https://github.com/Chakiss/one-event/discussions">Discussions</a>
 </p>
+# Force deploy to fix public registration endpoint
