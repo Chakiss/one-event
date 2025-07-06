@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { EventModule } from './modules/event/event.module';
 import { RegistrationModule } from './modules/registration/registration.module';
+import { PublicModule } from './public/public.module';
 import { CommonModule } from './common/common.module';
 import { getDatabaseConfig } from './config/database.config';
 import { getThrottlerConfig } from './config/throttler.config';
@@ -31,6 +32,7 @@ import { CorsMiddleware } from './middlewares/cors.middleware';
     UsersModule,
     EventModule,
     RegistrationModule,
+    PublicModule,
     CommonModule,
   ],
   controllers: [AppController, HealthController],
