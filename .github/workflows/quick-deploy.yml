@@ -71,6 +71,7 @@ jobs:
             --memory=1Gi \
             --cpu=1 \
             --timeout=300 \
+            --port=8080 \
             --set-env-vars="NODE_ENV=${{ steps.env.outputs.suffix == 'prod' && 'production' || 'development' }}" \
             --set-secrets="DATABASE_URL=one-event-db-url-${{ steps.env.outputs.suffix }}:latest,JWT_SECRET=one-event-jwt-secret-${{ steps.env.outputs.suffix }}:latest"
 
@@ -98,7 +99,7 @@ jobs:
             --max-instances=${{ steps.env.outputs.max_instances }} \
             --memory=512Mi \
             --cpu=1 \
-            --port=80
+            --port=8080
 
       # Health Check
       - name: Health Check
