@@ -51,7 +51,7 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+# PORT will be set by Cloud Run automatically
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 

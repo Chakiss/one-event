@@ -72,7 +72,7 @@ jobs:
             --cpu=1 \
             --timeout=300 \
             --port=3000 \
-            --set-env-vars="NODE_ENV=${{ steps.env.outputs.suffix == 'prod' && 'production' || 'development' }},PORT=3000" \
+            --set-env-vars="NODE_ENV=${{ steps.env.outputs.suffix == 'prod' && 'production' || 'development' }}" \
             --set-secrets="DATABASE_URL=one-event-db-url-${{ steps.env.outputs.suffix }}:latest,JWT_SECRET=one-event-jwt-secret-${{ steps.env.outputs.suffix }}:latest"
 
       # Build and Deploy Frontend
@@ -100,7 +100,7 @@ jobs:
             --memory=512Mi \
             --cpu=1 \
             --port=3000 \
-            --set-env-vars="PORT=3000,NEXT_PUBLIC_API_URL=https://one-event-api-${{ steps.env.outputs.suffix }}-zwxzaz56uq-as.a.run.app"
+            --set-env-vars="NEXT_PUBLIC_API_URL=https://one-event-api-${{ steps.env.outputs.suffix }}-zwxzaz56uq-as.a.run.app"
 
       # Health Check
       - name: Health Check
