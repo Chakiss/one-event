@@ -25,6 +25,41 @@ A comprehensive event management platform built with modern technologies, featur
 - **Authentication**: JWT-based secure authentication
 - **Email Integration**: Automated email notifications
 
+## 🚀 Quick Deployment
+
+### 🌐 Deploy to GCP (Recommended)
+```bash
+# One-command deployment to Google Cloud Platform
+./deploy-gcp.sh
+```
+
+### 🏠 Local Production
+```bash
+# Test local production environment
+./scripts/test-local-prod.sh
+
+# Start local production
+docker compose -f docker-compose.prod.yml up -d
+```
+
+### 🧪 Development
+```bash
+# Start development environment
+./start-dev.sh
+```
+
+## 🌐 Live Demo
+
+### 🎯 Production (GCP)
+- **🖥️ Frontend**: https://one-event-web-prod-712057384144.asia-southeast1.run.app
+- **🔧 Backend API**: https://one-event-api-prod-712057384144.asia-southeast1.run.app
+- **📚 API Documentation**: https://one-event-api-prod-712057384144.asia-southeast1.run.app/api
+
+### 🏠 Local URLs
+- **Frontend**: http://localhost (production) | http://localhost:3001 (dev)
+- **Backend**: http://localhost:3000
+- **Database**: localhost:5432
+
 ## 🏗️ Architecture
 
 ```
@@ -47,7 +82,9 @@ one-event/
 │   └── ...
 ├── 📂 docs/                # Documentation
 ├── 📂 scripts/             # Deployment scripts
-└── 📂 infrastructure/      # Infrastructure as Code
+├── 📂 infrastructure/      # Infrastructure as Code
+├── 🚀 deploy-gcp.sh        # Quick GCP deployment
+└── 📋 GCP_DEPLOYMENT_GUIDE.md # Complete deployment guide
 ```
 
 ## 🚀 Quick Start

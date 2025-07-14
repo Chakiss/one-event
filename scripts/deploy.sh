@@ -18,8 +18,10 @@ if [ ! -f "docker-compose.prod.yml" ]; then
     exit 1
 fi
 
-# Load environment variables
-export $(cat .env | grep -v '^#' | xargs)
+# Load environment variables (safely handle quoted values)
+set -a
+source .env
+set +a
 
 echo "📦 Building and starting services..."
 

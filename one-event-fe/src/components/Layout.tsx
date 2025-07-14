@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
-import { SimpleLogo } from './common/SimpleLogo';
+import { Logo } from './common/Logo';
 import {
   CalendarDays,
   Users,
@@ -103,7 +103,7 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex items-center">
                 <Link href="/" className="flex items-center">
                   <div className="relative">
-                    <SimpleLogo 
+                    <Logo 
                       size="sm"
                       className="mr-3 drop-shadow-sm"
                     />
@@ -250,7 +250,7 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex flex-shrink-0 items-center px-6 mb-8">
                 <div className="flex items-center">
                   <div className="relative">
-                    <SimpleLogo 
+                    <Logo 
                       size="sm"
                       className="mr-3 drop-shadow-sm"
                     />
@@ -297,7 +297,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center flex-shrink-0 px-6 mb-8">
               <div className="flex items-center">
                 <div className="relative">
-                  <SimpleLogo 
+                  <Logo 
                     size="sm"
                     className="mr-3 drop-shadow-sm"
                   />

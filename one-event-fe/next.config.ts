@@ -24,16 +24,6 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // Static file serving configuration
-  async rewrites() {
-    return [
-      {
-        source: '/logo.png',
-        destination: '/logo.png',
-      },
-    ];
-  },
-
   // Performance and build optimizations
   poweredByHeader: false,
   compress: true,

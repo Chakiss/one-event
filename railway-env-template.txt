@@ -1,0 +1,24 @@
+# Railway Environment Variables Template
+# Copy these to Railway Dashboard > Project > Variables
+
+## Backend Service Variables
+NODE_ENV=production
+PORT=$PORT
+DATABASE_URL=$DATABASE_URL
+REDIS_URL=$REDIS_URL
+JWT_SECRET=31441684d1c387c30c74cab9072a700084eb52d91ecea122a3fb4025548de954
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+EMAIL_FROM=OneEvent <noreply@oneevent.demo>
+
+## Frontend Service Variables
+NEXT_PUBLIC_API_URL=https://your-backend-service.railway.app
+
+# Instructions:
+# 1. Replace 'your-email@gmail.com' with your actual Gmail
+# 2. Replace 'your-app-password' with Gmail App Password
+# 3. Replace 'your-backend-service.railway.app' with actual backend URL
+# 4. Generate new JWT_SECRET: openssl rand -hex 32

@@ -82,6 +82,8 @@ services:
     build:
       context: ./one-event-fe
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost/api
     container_name: one-event-frontend
     restart: unless-stopped
     depends_on:
@@ -95,7 +97,7 @@ services:
     networks:
       - one-event-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3

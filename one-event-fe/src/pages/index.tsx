@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Calendar, Users, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { SimpleLogo } from '../components/common/SimpleLogo';
+import { Logo } from '../components/common/Logo';
 
 export default function Home() {
   const { user } = useAuth();
@@ -15,7 +15,7 @@ export default function Home() {
           <div className="text-center">
             <div className="flex justify-center mb-8">
               <div className="relative">
-                <SimpleLogo 
+                <Logo 
                   size="lg"
                   className="drop-shadow-lg"
                 />
