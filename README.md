@@ -27,25 +27,26 @@ A comprehensive event management platform built with modern technologies, featur
 
 ## 🚀 Quick Deployment
 
-### 🌐 Deploy to GCP (Recommended)
+### 🚄 Deploy to Railway (Recommended)
 ```bash
-# One-command deployment to Google Cloud Platform
-./deploy-gcp.sh
+# One-command deployment to Railway
+railway login
+railway link
+railway up
 ```
 
-### 🏠 Local Production
-```bash
-# Test local production environment
-./scripts/test-local-prod.sh
+See [RAILWAY_QUICK_START.md](RAILWAY_QUICK_START.md) for detailed setup instructions.
 
-# Start local production
-docker compose -f docker-compose.prod.yml up -d
-```
-
-### 🧪 Development
+### 🏠 Local Development
 ```bash
 # Start development environment
 ./start-dev.sh
+```
+
+### 🧪 Local Production Testing
+```bash
+# Test local production environment
+docker compose up -d
 ```
 
 ## 🌐 Live Demo
