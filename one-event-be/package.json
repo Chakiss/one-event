@@ -27,7 +27,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:emails": "npx ts-node src/scripts/test-emails.ts",
-    "health:check": "curl http://localhost:3000/health"
+    "health:check": "curl http://localhost:3000/health",
+    "migrate": "node scripts/migrate.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

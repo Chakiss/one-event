@@ -18,7 +18,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set build-time environment variables for Next.js
-ARG NEXT_PUBLIC_API_URL=https://one-event-api-prod-zwxzaz56uq-as.a.run.app
+ARG NEXT_PUBLIC_API_URL=https://backend-production-c78d7.up.railway.app
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_NAME=OneEvent
 ENV NODE_ENV=production

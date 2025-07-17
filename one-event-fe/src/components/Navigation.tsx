@@ -9,7 +9,11 @@ const Navigation = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Safety check for router.pathname
+  const currentPath = router.pathname || '';
+
   const handleLogout = async () => {
+    console.log('Logout button clicked'); // Debug log
     await logout();
     router.push('/');
     setIsMenuOpen(false);
@@ -32,12 +36,12 @@ const Navigation = () => {
 
   if (loading) {
     return (
-      <nav className="bg-white shadow-sm border-b border-gray-200">
+      <nav className="glass-navbar sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <div className="h-8 w-8 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="ml-3 h-6 w-24 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-8 w-8 glass rounded-lg animate-pulse"></div>
+              <div className="ml-3 h-6 w-24 glass rounded animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -46,91 +50,101 @@ const Navigation = () => {
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="glass-navbar sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Logo */}
+          {/* Enhanced Logo */}
           <div className="flex items-center">
-            <Link href={user ? '/dashboard' : '/'} className="flex items-center">
-              <div className="relative">
+            <Link href={user ? '/dashboard' : '/'} className="flex items-center group">
+              <div className="glass-logo-container">
                 <SimpleLogo 
                   size="sm"
                   className="drop-shadow-sm"
                 />
               </div>
-              <span className="ml-3 text-xl font-semibold text-gray-900">OneEvent</span>
+              <span className="ml-3 text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:from-red-600 group-hover:to-red-700 transition-all duration-300">
+                OneEvent
+              </span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
+          {/* Enhanced Desktop Navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-4">
             {user ? (
               <>
-                {/* Authenticated Navigation */}
+                {/* Authenticated Navigation with Glass Effect */}
                 {authNavItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      router.pathname === item.href
-                        ? 'bg-red-100 text-red-700'
-                        : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+                    className={`glass-nav-item px-4 py-2 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                      currentPath === item.href
+                        ? 'active'
+                        : 'text-gray-700 hover:text-red-600'
                     }`}
                   >
-                    <span className="mr-2">{item.icon}</span>
+                    <span className="mr-2 text-lg">{item.icon}</span>
                     {item.label}
                   </Link>
                 ))}
                 
-                {/* User Menu */}
+                {/* Enhanced User Menu */}
                 <div className="relative ml-4">
                   <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50"
+                    onClick={() => {
+                      console.log('User menu toggle clicked', !isMenuOpen); // Debug log
+                      setIsMenuOpen(!isMenuOpen);
+                    }}
+                    className="glass-nav-item flex items-center px-4 py-2 rounded-2xl text-sm font-medium text-gray-700 hover:text-red-600 group"
                   >
-                    <div className="h-8 w-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-red-600 font-medium text-sm">
-                        {user.name.charAt(0).toUpperCase()}
+                    <div className="glass-user-avatar h-8 w-8 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-red-600 font-bold text-sm">
+                        {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                       </span>
                     </div>
-                    <span className="max-w-32 truncate">{user.name}</span>
-                    <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <span className="max-w-32 truncate">{user?.name || 'User'}</span>
+                    <svg className="ml-2 h-4 w-4 transform transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  {/* Dropdown Menu */}
+                  {/* Enhanced Dropdown Menu */}
                   {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                    <div className="absolute right-0 mt-3 w-56 glass-dropdown z-50">
                       <div className="py-2">
-                        <div className="px-4 py-2 border-b border-gray-200">
-                          <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                          <p className="text-xs text-gray-500">{user.email}</p>
-                          <p className="text-xs text-red-600 capitalize">{user.role}</p>
+                        <div className="px-4 py-3 border-b border-white/20">
+                          <p className="text-sm font-bold text-gray-900">{user.name}</p>
+                          <p className="text-xs text-gray-600">{user.email}</p>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-red-500 to-pink-500 text-white mt-1">
+                            {user.role}
+                          </span>
                         </div>
                         
                         <Link
                           href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className="glass-dropdown-item flex items-center px-4 py-3 text-sm text-gray-700 hover:text-red-600"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          👤 Profile Settings
+                          <span className="mr-3 text-lg">👤</span>
+                          Profile Settings
                         </Link>
                         
                         <Link
                           href="/settings"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className="glass-dropdown-item flex items-center px-4 py-3 text-sm text-gray-700 hover:text-red-600"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          ⚙️ Account Settings
+                          <span className="mr-3 text-lg">⚙️</span>
+                          Account Settings
                         </Link>
                         
-                        <div className="border-t border-gray-200 mt-2 pt-2">
+                        <div className="border-t border-white/20 mt-2 pt-2">
                           <button
                             onClick={handleLogout}
-                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                            className="glass-dropdown-item flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:text-red-700 font-medium"
                           >
-                            🚪 Sign Out
+                            <span className="mr-3 text-lg">🚪</span>
+                            Sign Out
                           </button>
                         </div>
                       </div>
@@ -140,33 +154,33 @@ const Navigation = () => {
               </>
             ) : (
               <>
-                {/* Public Navigation */}
+                {/* Public Navigation with Glass Effect */}
                 {publicNavItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      router.pathname === item.href
-                        ? 'bg-red-100 text-red-700'
-                        : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+                    className={`glass-nav-item px-4 py-2 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                      currentPath === item.href
+                        ? 'active'
+                        : 'text-gray-700 hover:text-red-600'
                     }`}
                   >
-                    <span className="mr-2">{item.icon}</span>
+                    <span className="mr-2 text-lg">{item.icon}</span>
                     {item.label}
                   </Link>
                 ))}
                 
-                {/* Auth Buttons */}
-                <div className="flex items-center space-x-4 ml-8">
+                {/* Enhanced Auth Buttons */}
+                <div className="flex items-center space-x-3 ml-6">
                   <Link
                     href="/auth/login"
-                    className="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium"
+                    className="glass-nav-item text-gray-700 hover:text-red-600 px-4 py-2 rounded-2xl text-sm font-medium"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/register"
-                    className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    className="glass-button-nav text-white px-6 py-2 rounded-2xl text-sm font-bold shadow-lg"
                   >
                     Sign Up
                   </Link>
@@ -175,11 +189,14 @@ const Navigation = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Enhanced Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-gray-600 hover:text-red-600 hover:bg-gray-100"
+              onClick={() => {
+                console.log('Mobile menu toggle clicked', !isMenuOpen); // Debug log
+                setIsMenuOpen(!isMenuOpen);
+              }}
+              className="glass-nav-item p-2 rounded-xl text-gray-600 hover:text-red-600"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMenuOpen ? (
@@ -192,23 +209,26 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Enhanced Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200">
+          <div className="md:hidden glass-mobile-menu border-t border-white/30">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {user ? (
                 <>
-                  {/* User Info */}
-                  <div className="px-3 py-3 border-b border-gray-200 mb-2">
+                  {/* Enhanced User Info */}
+                  <div className="glass px-4 py-4 rounded-2xl mb-4 mx-2">
                     <div className="flex items-center">
-                      <div className="h-10 w-10 bg-red-100 rounded-full flex items-center justify-center">
-                        <span className="text-red-600 font-medium">
-                          {user.name.charAt(0).toUpperCase()}
+                      <div className="glass-user-avatar h-12 w-12 rounded-full flex items-center justify-center">
+                        <span className="text-red-600 font-bold text-lg">
+                          {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                         </span>
                       </div>
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
+                      <div className="ml-4">
+                        <p className="text-sm font-bold text-gray-900">{user?.name || 'User'}</p>
+                        <p className="text-xs text-gray-600">{user?.email || ''}</p>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-red-500 to-pink-500 text-white mt-1">
+                          {user?.role || 'User'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -218,24 +238,25 @@ const Navigation = () => {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`block px-3 py-2 rounded-md text-base font-medium ${
-                        router.pathname === item.href
-                          ? 'bg-red-100 text-red-700'
-                          : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+                      className={`glass-nav-item mx-2 block px-4 py-3 rounded-2xl text-base font-medium transition-all duration-300 ${
+                        currentPath === item.href
+                          ? 'active'
+                          : 'text-gray-700 hover:text-red-600'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <span className="mr-3">{item.icon}</span>
+                      <span className="mr-3 text-lg">{item.icon}</span>
                       {item.label}
                     </Link>
                   ))}
 
-                  <div className="border-t border-gray-200 mt-4 pt-4">
+                  <div className="border-t border-white/30 mt-4 pt-4">
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50"
+                      className="glass-nav-item mx-2 flex items-center w-full text-left px-4 py-3 rounded-2xl text-base font-bold text-red-600 hover:text-red-700"
                     >
-                      🚪 Sign Out
+                      <span className="mr-3 text-lg">🚪</span>
+                      Sign Out
                     </button>
                   </div>
                 </>
@@ -246,29 +267,29 @@ const Navigation = () => {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`block px-3 py-2 rounded-md text-base font-medium ${
-                        router.pathname === item.href
-                          ? 'bg-red-100 text-red-700'
-                          : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+                      className={`glass-nav-item mx-2 block px-4 py-3 rounded-2xl text-base font-medium transition-all duration-300 ${
+                        currentPath === item.href
+                          ? 'active'
+                          : 'text-gray-700 hover:text-red-600'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <span className="mr-3">{item.icon}</span>
+                      <span className="mr-3 text-lg">{item.icon}</span>
                       {item.label}
                     </Link>
                   ))}
 
-                  <div className="border-t border-gray-200 mt-4 pt-4 space-y-2">
+                  <div className="border-t border-white/30 mt-4 pt-4 space-y-2">
                     <Link
                       href="/auth/login"
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50"
+                      className="glass-nav-item mx-2 block px-4 py-3 rounded-2xl text-base font-medium text-gray-700 hover:text-red-600"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Sign In
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="block px-3 py-2 rounded-md text-base font-medium bg-red-600 text-white hover:bg-red-700"
+                      className="glass-button-nav mx-2 block px-4 py-3 rounded-2xl text-base font-bold text-white text-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Sign Up

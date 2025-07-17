@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'https://one-event-api-prod-zwxzaz56uq-as.a.run.app'}/events/slug/${slug}`
+      `${process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-c78d7.up.railway.app'}/events/slug/${slug}`
     );
 
     if (!response.ok) {

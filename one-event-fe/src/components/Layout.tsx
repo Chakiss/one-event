@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 import { Logo } from './common/Logo';
+import Navigation from './Navigation';
 import {
   CalendarDays,
   Users,
@@ -46,19 +47,22 @@ export default function Layout({ children }: LayoutProps) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Safety check for router.pathname
+  const currentPath = router.pathname || '';
+
   // Routes that don't require authentication
   const publicRoutes = ['/', '/auth/login', '/auth/register', '/auth/verify-email', '/events'];
   
   // Check if current route is public
   const isPublicRoute = publicRoutes.some(route => 
-    router.pathname === route || router.pathname.startsWith('/auth/')
+    currentPath === route || currentPath.startsWith('/auth/')
   );
 
   // Check if current route is a registration page (should have minimal layout)
-  const isRegistrationPage = router.pathname.includes('/register');
+  const isRegistrationPage = currentPath.includes('/register');
   
   // Check if current route is dashboard page (should not have sidebar)
-  const isDashboardPage = router.pathname === '/dashboard';
+  const isDashboardPage = currentPath === '/dashboard';
 
   const handleLogout = async () => {
     await logout();
@@ -73,7 +77,7 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   // Show loading state
-  if (loading) {
+  if (loading || !router.isReady) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -96,54 +100,8 @@ export default function Layout({ children }: LayoutProps) {
   if (isPublicRoute || !user) {
     return (
       <div className="min-h-screen bg-gray-50">
-        {/* Simple Top Navigation */}
-        <nav className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <Link href="/" className="flex items-center">
-                  <div className="relative">
-                    <Logo 
-                      size="sm"
-                      className="mr-3 drop-shadow-sm"
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-bold text-gray-900">OneEvent</h1>
-                  </div>
-                </Link>
-              </div>
-              
-              {!user && (
-                <div className="flex items-center space-x-4">
-                  <Link
-                    href="/auth/login"
-                    className="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    เข้าสู่ระบบ
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    สมัครสมาชิก
-                  </Link>
-                </div>
-              )}
-
-              {user && (
-                <div className="flex items-center space-x-4">
-                  <Link
-                    href="/dashboard"
-                    className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    Dashboard
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </nav>
+        {/* Use Navigation component for consistent UI */}
+        <Navigation />
         
         <main className="flex-1">
           {children}
@@ -263,7 +221,7 @@ export default function Layout({ children }: LayoutProps) {
               </div>
               <nav className="mt-5 space-y-1 px-3">
                 {filteredNavigation.map((item) => {
-                  const isActive = router.pathname === item.href;
+                  const isActive = currentPath === item.href;
                   return (
                     <Link
                       key={item.name}
@@ -316,7 +274,7 @@ export default function Layout({ children }: LayoutProps) {
                   เมนูหลัก
                 </h3>
                 {filteredNavigation.slice(0, 4).map((item) => {
-                  const isActive = router.pathname === item.href;
+                  const isActive = currentPath === item.href;
                   return (
                     <Link
                       key={item.name}
@@ -344,7 +302,7 @@ export default function Layout({ children }: LayoutProps) {
                     การจัดการ
                   </h3>
                   {filteredNavigation.slice(4).map((item) => {
-                    const isActive = router.pathname === item.href;
+                    const isActive = currentPath === item.href;
                     return (
                       <Link
                         key={item.name}
