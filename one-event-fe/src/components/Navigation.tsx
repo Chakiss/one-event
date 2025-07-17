@@ -113,8 +113,8 @@ const Navigation = () => {
                     <div className="absolute right-0 mt-3 w-56 glass-dropdown z-50">
                       <div className="py-2">
                         <div className="px-4 py-3 border-b border-white/20">
-                          <p className="text-sm font-bold text-gray-900">{user.name}</p>
-                          <p className="text-xs text-gray-600">{user.email}</p>
+                          <p className="text-sm font-bold text-gray-900">{user?.name || 'User'}</p>
+                          <p className="text-xs text-gray-600">{user?.email || ''}</p>
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-red-500 to-pink-500 text-white mt-1">
                             {user.role}
                           </span>

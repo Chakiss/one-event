@@ -226,7 +226,7 @@ const EditEventPage = () => {
             
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-600">
-                <span className="font-medium text-gray-900">{user.name}</span>
+                <span className="font-medium text-gray-900">{user?.name || 'User'}</span>
               </div>
             </div>
           </div>

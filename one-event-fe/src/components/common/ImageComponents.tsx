@@ -107,7 +107,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     xl: 'w-24 h-24 text-xl'
   };
 
-  const initials = user.name
+  const initials = (user?.name || 'User')
     .split(' ')
     .map(n => n.charAt(0))
     .join('')
@@ -119,7 +119,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
       {user.avatar ? (
         <EnhancedImage
           src={user.avatar}
-          alt={user.name}
+          alt={user?.name || 'User'}
           fill
           className="object-cover"
         />

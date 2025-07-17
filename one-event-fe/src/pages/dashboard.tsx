@@ -135,7 +135,7 @@ const DashboardPage = () => {
                 </div>
               )}
               <div className="text-sm text-gray-600">
-                Welcome, <span className="font-medium text-gray-900">{user.name}</span>
+                Welcome, <span className="font-medium text-gray-900">{user?.name || 'User'}</span>
               </div>
               <button
                 onClick={handleLogout}

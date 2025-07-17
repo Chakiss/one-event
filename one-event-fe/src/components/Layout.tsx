@@ -148,10 +148,10 @@ export default function Layout({ children }: LayoutProps) {
                       <div className="flex items-center gap-x-3">
                         <div className="text-right">
                           <p className="text-sm font-medium text-gray-900">
-                            {user.name}
+                            {user?.name || 'User'}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {user.email}
+                            {user?.email || ''}
                           </p>
                         </div>
                         {isAdmin && (
@@ -374,10 +374,10 @@ export default function Layout({ children }: LayoutProps) {
                     <div className="flex items-center gap-x-3">
                       <div className="text-right">
                         <p className="text-sm font-medium text-gray-900">
-                          {user.name}
+                          {user?.name || 'User'}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {user.email}
+                          {user?.email || ''}
                         </p>
                       </div>
                       {isAdmin && (

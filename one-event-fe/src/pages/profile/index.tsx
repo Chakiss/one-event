@@ -36,8 +36,8 @@ export default function ProfilePage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       fetchUserData();
-      setValue('name', user.name);
-      setValue('email', user.email);
+      setValue('name', user?.name || '');
+      setValue('email', user?.email || '');
     }
   }, [isAuthenticated, user, setValue]);
 
@@ -73,8 +73,8 @@ export default function ProfilePage() {
     setEditing(false);
     reset();
     if (user) {
-      setValue('name', user.name);
-      setValue('email', user.email);
+      setValue('name', user?.name || '');
+      setValue('email', user?.email || '');
     }
   };
 
