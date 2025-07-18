@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer, OnModuleInit } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
@@ -15,7 +15,6 @@ import { CommonModule } from './common/common.module';
 import { getDatabaseConfig } from './config/database.config';
 import { getThrottlerConfig } from './config/throttler.config';
 import { CorsMiddleware } from './middlewares/cors.middleware';
-import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -45,24 +44,7 @@ import { DataSource } from 'typeorm';
     },
   ],
 })
-export class AppModule implements NestModule, OnModuleInit {
-  constructor(private dataSource: DataSource) {}
-
-  async onModuleInit() {
-    console.log('🔄 Initializing database tables...');
-    try {
-      if (this.dataSource.isInitialized) {
-        console.log('✅ Database connection is active');
-
-        // Force synchronize to create tables
-        await this.dataSource.synchronize(false);
-        console.log('✅ Database tables synchronized successfully');
-      }
-    } catch (error) {
-      console.error('❌ Database initialization error:', error);
-    }
-  }
-
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(CorsMiddleware).forRoutes('*');
   }

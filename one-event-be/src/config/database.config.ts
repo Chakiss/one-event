@@ -5,6 +5,8 @@ export const getDatabaseConfig = (
   configService: ConfigService,
 ): TypeOrmModuleOptions => {
   const databaseUrl = configService.get<string>('DATABASE_URL');
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+  const isProduction = nodeEnv === 'production';
 
   // If DATABASE_URL is provided, use it
   if (databaseUrl) {
@@ -12,10 +14,18 @@ export const getDatabaseConfig = (
       type: 'postgres',
       url: databaseUrl,
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV === 'development', // Enable synchronize in development
-      logging: process.env.NODE_ENV === 'development',
+      synchronize: !isProduction, // Never synchronize in production
+      logging: !isProduction ? ['query', 'error'] : ['error'], // Only log errors in production
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-      migrationsRun: false, // Disable migrations since tables are already created via synchronize
+      migrationsRun: false, // Disable auto-migrations, run manually
+      ssl: isProduction ? { rejectUnauthorized: false } : false, // Enable SSL for production
+      extra: isProduction
+        ? {
+            max: 10, // Maximum number of connections
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 2000,
+          }
+        : {},
     };
   }
 
@@ -28,9 +38,17 @@ export const getDatabaseConfig = (
     password: configService.get<string>('DATABASE_PASSWORD'),
     database: configService.get<string>('DATABASE_NAME'),
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: process.env.NODE_ENV !== 'production',
-    logging: process.env.NODE_ENV === 'development',
+    synchronize: !isProduction, // Never synchronize in production
+    logging: !isProduction ? ['query', 'error'] : ['error'], // Only log errors in production
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-    migrationsRun: true, // Enable auto-migration for production
+    migrationsRun: false, // Disable auto-migrations, run manually
+    ssl: isProduction ? { rejectUnauthorized: false } : false, // Enable SSL for production
+    extra: isProduction
+      ? {
+          max: 10, // Maximum number of connections
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 2000,
+        }
+      : {},
   };
 };
